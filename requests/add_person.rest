@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/persons/
+content-type: application/json
+
+{
+    "name": "Past Forward 2",
+    "number": "0123456789"
+}
