@@ -1,7 +1,11 @@
 const express = require('express')
 const cors = require('cors')
-const app = express()
+const dotenv = require('dotenv').config()
 const morgan = require('morgan')
+const Person = require('./models/person')
+
+const app = express()
+
 
 app.use(express.static('build'))
 app.use(cors())
@@ -17,31 +21,6 @@ const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
-
-let persons =
-[
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
-
 // Info request
 app.get('/info', (request, response) => {
     const returnString = `
@@ -52,7 +31,9 @@ app.get('/info', (request, response) => {
 
 // Phonebook list
 app.get('/api/persons', (request, response) => {
+  Person.find({}).then(persons => {
     response.json(persons)
+  })
 })
 
 // Phonebook entry show
@@ -75,14 +56,7 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 // Phonebook add entry
-const generateId = () => {
-    let newId = 1
-    while(persons.find(person => person.id === newId))
-        newId = Math.round(Math.random(1000)*1000)
-    return newId
-  }
-  
-  app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response) => {
     const body = request.body
 
     if (!body.name || body.name === "") {
@@ -97,21 +71,14 @@ const generateId = () => {
         })
     }
 
-    if (persons.find(person => person.name ===  body.name)) {
-        return response.status(400).json({ 
-          error: `The contact ${body.name} does already exist in the phonebook` 
-        })
-    }    
-  
-    const person = {
+    const person = new Person({
       name: body.name,
-      number: body.number,
-      id: generateId()
-    }
+      number: body.number
+    })
   
-    persons = persons.concat(person)
-  
-    response.json(person)
+    person.save().then(savedPerson => {
+      response.json(savedPerson)
+    })
   })
 
 app.use(unknownEndpoint)
