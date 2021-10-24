@@ -64,6 +64,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
+    // Content validation made at model level
+    /*
     if (!body.name || body.name === "") {
         return response.status(400).json({ 
           error: 'Name missing' 
@@ -75,6 +77,7 @@ app.post('/api/persons', (request, response, next) => {
           error: 'Number missing' 
         })
     }
+    */
 
     const person = new Person({
       name: body.name,
@@ -102,7 +105,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators : true })
     .then(updatePerson => {
       response.json(updatePerson)
     })
@@ -120,7 +123,9 @@ app.put('/api/persons/:id', (request, response, next) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
-    } 
+    } else if (error.name === 'ValidationError') {
+      return response.status(500).send({ error: error.message })
+    }
   
     next(error)
   }

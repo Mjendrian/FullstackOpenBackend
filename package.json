@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../Fullstack/part2/phonebook/ && npm run build --prod && cp -r build ../../Fullstack backend",
+    "build:ui": "rm -rf build && cd ../Fullstack/part2/phonebook/ && npm run build --prod && cp -r build ../../../Fullstack_Backend/",
     "deploy": "git push heroku main",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push && npm run deploy",
     "logs:prod": "heroku logs --tail"
@@ -19,6 +19,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "mongoose": "^6.0.11",
+    "mongoose-unique-validator": "^3.0.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
