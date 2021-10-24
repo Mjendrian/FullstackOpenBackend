@@ -7,9 +7,9 @@ if (process.argv.length < 3) {
 }
 
 if (process.argv.length > 5) {
-    console.log('Please provide the name in quotes, if it contains more than one word.')
-    process.exit(1)
-  }
+  console.log('Please provide the name in quotes, if it contains more than one word.')
+  process.exit(1)
+}
 
 // Connecion information
 const password = process.argv[2]
@@ -28,25 +28,25 @@ const Person = mongoose.model('Person', personSchema)
 
 // Insertion
 if(process.argv.length > 3) {
-    const name = process.argv[3]
-    const number = process.argv[4]
+  const name = process.argv[3]
+  const number = process.argv[4]
 
-    const person = new Person({
-        name: name,
-        number: number
-    })
-      
-    person.save().then(result => {
-        console.log(`added ${name} with number ${number} to phonebook`)
-        mongoose.connection.close()
-    })
+  const person = new Person({
+    name: name,
+    number: number
+  })
+
+  person.save().then(() => {
+    console.log(`added ${name} with number ${number} to phonebook`)
+    mongoose.connection.close()
+  })
 
 }else{
 // Listing
-    Person.find({ }).then(result => {
-        result.forEach(person => {
-          console.log(`${person.name} : ${person.number}`)
-        })
-        mongoose.connection.close()
+  Person.find({ }).then(result => {
+    result.forEach(person => {
+      console.log(`${person.name} : ${person.number}`)
     })
+    mongoose.connection.close()
+  })
 }
