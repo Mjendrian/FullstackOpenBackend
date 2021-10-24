@@ -8,6 +8,7 @@ module.exports = {
   'parserOptions': {
     'ecmaVersion': 13
   },
+  'ignorePatterns': [ 'build/' ],
   'rules': {
     'indent': [
       'error',
